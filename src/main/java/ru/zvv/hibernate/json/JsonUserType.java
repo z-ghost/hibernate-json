@@ -16,16 +16,23 @@ import java.sql.Types;
 public class JsonUserType implements UserType {
     private JsonConverter converter = new JsonConverter();
 
+    private Class entityClass;
+
+    public JsonUserType(Class entity)
+    {
+        this.entityClass = entity;
+    }
+
     @Override
     public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return converter.fromJson((String) cached);
+        return converter.fromJson((String) cached, entityClass);
     }
 
     @Override
     public Object deepCopy(Object value) throws HibernateException {
         if (value == null)
             return null;
-        return converter.fromJson(converter.toJson(value));
+        return converter.fromJson(converter.toJson(value), entityClass);
     }
 
     @Override
@@ -54,7 +61,7 @@ public class JsonUserType implements UserType {
     public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor sessionImplementor, Object owner) throws HibernateException, SQLException {
         String value = rs.getString(names[0]);
         if (!rs.wasNull()) {
-            return converter.fromJson(value);
+            return converter.fromJson(value, entityClass);
         }
 
         return null;

@@ -14,6 +14,10 @@ public class Document {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public void setChapterList(List<Chapter> chapterList) {
         this.chapterList = chapterList;
     }
